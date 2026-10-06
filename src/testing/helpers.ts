@@ -3,9 +3,9 @@ import { createGame } from '../core/state';
 import type { EventType, GameState, Input } from '../core/types';
 import { parseLevel } from '../levels/format';
 
-export { levelText, span } from './level-text';
+export { levelText, pipeEdits, span, type Edit } from './level-text';
 
-export const NONE: Input = { left: false, right: false, jump: false, run: false };
+export const NONE: Input = { left: false, right: false, jump: false, run: false, down: false };
 
 /** A game already in the `playing` phase on the given level texts. */
 export function playing(...texts: string[]): GameState {

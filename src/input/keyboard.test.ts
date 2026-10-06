@@ -10,7 +10,7 @@ function press(target: EventTarget, type: 'keydown' | 'keyup', code: string) {
 describe('createKeyboardInput', () => {
   it('reports nothing pressed at first', () => {
     const input = createKeyboardInput(new EventTarget());
-    expect(input.poll()).toEqual({ left: false, right: false, jump: false, run: false });
+    expect(input.poll()).toEqual({ left: false, right: false, jump: false, run: false, down: false });
   });
 
   it('tracks held keys until released', () => {
@@ -38,12 +38,22 @@ describe('createKeyboardInput', () => {
     expect(press(target, 'keydown', 'KeyQ').defaultPrevented).toBe(false);
   });
 
+  it('binds Down and S to down', () => {
+    const target = new EventTarget();
+    const input = createKeyboardInput(target);
+    press(target, 'keydown', 'ArrowDown');
+    expect(input.poll().down).toBe(true);
+    press(target, 'keyup', 'ArrowDown');
+    press(target, 'keydown', 'KeyS');
+    expect(input.poll().down).toBe(true);
+  });
+
   it('releases every key when the window loses focus', () => {
     const target = new EventTarget();
     const input = createKeyboardInput(target);
     press(target, 'keydown', 'ArrowRight');
     press(target, 'keydown', 'KeyX');
     target.dispatchEvent(new Event('blur'));
-    expect(input.poll()).toEqual({ left: false, right: false, jump: false, run: false });
+    expect(input.poll()).toEqual({ left: false, right: false, jump: false, run: false, down: false });
   });
 });

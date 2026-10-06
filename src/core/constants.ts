@@ -3,7 +3,7 @@ export const VIEW_TILES_W = 16;
 
 export const GRAVITY = 55;
 export const MAX_FALL = 20;
-export const JUMP_VELOCITY = 19;
+export const JUMP_VELOCITY = 22;
 export const JUMP_CUT_VELOCITY = 5;
 export const WALK_SPEED = 5;
 export const RUN_SPEED = 8;
@@ -35,3 +35,6 @@ export const POINTS = {
   brick: 50,
   timeBonus: 10,
 };
+
+export const WARP_SINK_TIME = 0.4;
+export const WARP_EMERGE_TIME = 0.4;

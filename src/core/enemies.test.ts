@@ -32,3 +32,15 @@ describe('walker movement', () => {
     expect(s.enemies).toHaveLength(0);
   });
 });
+
+describe('enemies and bonus rooms', () => {
+  it('does not wake enemies outside the dark room the player is in', () => {
+    const s = playing(levelText(80, [[30, 4, 'g']], 6, ['dark 60-75']));
+    s.player.x = 65;
+    s.player.y = 4;
+    tick(s, {}, 30);
+    expect(s.cameraX).toBeGreaterThanOrEqual(60);
+    expect(s.enemies[0].awake).toBe(false);
+    expect(s.enemies[0].x).toBeCloseTo(30.1);
+  });
+});

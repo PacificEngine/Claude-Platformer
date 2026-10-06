@@ -20,4 +20,10 @@ describe('sprite data', () => {
     expect(SPRITES.playerSmallJump).toHaveLength(SPRITES.playerSmallStand.length);
     expect(SPRITES.playerBigJump).toHaveLength(SPRITES.playerBigStand.length);
   });
+
+  it('has pipe, warp block and 1-up sprites', () => {
+    for (const name of ['pipeTL', 'pipeTR', 'pipeL', 'pipeR', 'warpBlock', 'mushroomOneUp'] as const) {
+      expect(SPRITES[name]).toHaveLength(8);
+    }
+  });
 });

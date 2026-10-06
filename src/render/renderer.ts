@@ -1,3 +1,4 @@
+import { activeDarkRange } from '../core/camera';
 import { VIEW_TILES_W } from '../core/constants';
 import type { GameState, Tile } from '../core/types';
 import type { SpriteName } from './spriteData';
@@ -14,6 +15,15 @@ const TILE_SPRITE: Record<Tile, SpriteName | null> = {
   coinBlock: 'question',
   mushroomBlock: 'question',
   used: 'used',
+  pipeTL: 'pipeTL',
+  pipeTR: 'pipeTR',
+  pipeL: 'pipeL',
+  pipeR: 'pipeR',
+  hiddenCoin: null,
+  hiddenOneUp: null,
+  hiddenMushroom: null,
+  hiddenWarp: null,
+  warpBlock: 'warpBlock',
 };
 
 function blit(
@@ -50,7 +60,20 @@ function blitBody(
   blit(ctx, img, x, y, TILE, heightPx, flip);
 }
 
-function drawBackground(ctx: CanvasRenderingContext2D, cam: number): void {
+/** Columns of a dark room are drawn only while the player is inside that same room. */
+function colVisible(s: GameState, col: number): boolean {
+  const inDark = s.levels[s.levelIndex].dark.some((range) => col >= range.from && col <= range.to);
+  if (!inDark) return true;
+  const active = activeDarkRange(s);
+  return active !== undefined && col >= active.from && col <= active.to;
+}
+
+function drawBackground(ctx: CanvasRenderingContext2D, cam: number, dark: boolean): void {
+  if (dark) {
+    ctx.fillStyle = '#0a0a1e';
+    ctx.fillRect(0, 0, VIEW_W, VIEW_H);
+    return;
+  }
   ctx.fillStyle = '#5c94fc';
   ctx.fillRect(0, 0, VIEW_W, VIEW_H);
 
@@ -77,6 +100,7 @@ function drawTiles(ctx: CanvasRenderingContext2D, s: GameState, sheet: SpriteShe
   const last = Math.min(s.width - 1, Math.ceil(s.cameraX + VIEW_TILES_W));
   for (let row = 0; row < s.height; row++) {
     for (let col = first; col <= last; col++) {
+      if (!colVisible(s, col)) continue;
       const name = TILE_SPRITE[s.tiles[row][col]];
       if (name) blit(ctx, sheet[name], col * TILE - cam, row * TILE, TILE, TILE);
     }
@@ -86,6 +110,7 @@ function drawTiles(ctx: CanvasRenderingContext2D, s: GameState, sheet: SpriteShe
 function drawCoins(ctx: CanvasRenderingContext2D, s: GameState, sheet: SpriteSheet, cam: number): void {
   const width = Math.max(4, Math.round(TILE * Math.abs(Math.cos(s.tick / 12))));
   for (const cell of s.coinPickups) {
+    if (!colVisible(s, cell.col)) continue;
     blit(ctx, sheet.coin, cell.col * TILE - cam + (TILE - width) / 2, cell.row * TILE, width, TILE);
   }
 }
@@ -107,11 +132,15 @@ function drawFlag(ctx: CanvasRenderingContext2D, s: GameState, cam: number): voi
 }
 
 function drawMushrooms(ctx: CanvasRenderingContext2D, s: GameState, sheet: SpriteSheet, cam: number): void {
-  for (const m of s.mushrooms) blitBody(ctx, sheet.mushroom, m, cam, TILE, false);
+  for (const m of s.mushrooms) {
+    if (!colVisible(s, Math.floor(m.x))) continue;
+    blitBody(ctx, sheet[m.kind === 'oneUp' ? 'mushroomOneUp' : 'mushroom'], m, cam, TILE, false);
+  }
 }
 
 function drawEnemies(ctx: CanvasRenderingContext2D, s: GameState, sheet: SpriteSheet, cam: number): void {
   for (const e of s.enemies) {
+    if (!colVisible(s, Math.floor(e.x))) continue;
     if (e.kind === 'walker') {
       blitBody(ctx, sheet.walker, e, cam, TILE, Math.floor(s.tick / 8) % 2 === 1);
     } else {
@@ -170,13 +199,15 @@ function drawOverlay(ctx: CanvasRenderingContext2D, s: GameState): void {
 export function render(ctx: CanvasRenderingContext2D, s: GameState, sheet: SpriteSheet): void {
   ctx.imageSmoothingEnabled = false;
   const cam = Math.round(s.cameraX * TILE);
-  drawBackground(ctx, cam);
+  drawBackground(ctx, cam, activeDarkRange(s) !== undefined);
+  // While warping, the player is drawn first so the pipe tiles cover them.
+  if (s.phase === 'warping') drawPlayer(ctx, s, sheet, cam);
   drawTiles(ctx, s, sheet, cam);
   drawCoins(ctx, s, sheet, cam);
   drawFlag(ctx, s, cam);
   drawMushrooms(ctx, s, sheet, cam);
   drawEnemies(ctx, s, sheet, cam);
-  drawPlayer(ctx, s, sheet, cam);
+  if (s.phase !== 'warping') drawPlayer(ctx, s, sheet, cam);
   drawHud(ctx, s);
   drawOverlay(ctx, s);
 }

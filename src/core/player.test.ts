@@ -78,6 +78,18 @@ describe('player jumping', () => {
     expect(apex(40)).toBeGreaterThan(apex(2) + 1);
   });
 
+  it('reaches about four tiles at the top of a held jump', () => {
+    const s = playing(FLAT);
+    tick(s, {}, 5);
+    let top = s.player.y;
+    for (let i = 0; i < 100; i++) {
+      step(s, { ...NONE, jump: true });
+      top = Math.min(top, s.player.y);
+    }
+    expect(4 - top).toBeGreaterThan(4.0);
+    expect(4 - top).toBeLessThan(4.6);
+  });
+
   it('allows a jump shortly after walking off a ledge (coyote time)', () => {
     const s = playing(LEDGE);
     tick(s, {}, 3);
@@ -101,5 +113,13 @@ describe('player jumping', () => {
     Object.assign(s.player, { y: 3.7, vy: 5, onGround: false, coyote: 0 });
     const events = [...collect(s, { jump: true }, 1), ...collect(s, {}, 8)];
     expect(events).toContain('jump');
+  });
+});
+
+describe('hidden blocks and the player', () => {
+  it('lets the player walk straight through a hidden block', () => {
+    const s = playing(levelText(30, [[5, 4, 'h']]));
+    tick(s, { right: true, run: true }, 60);
+    expect(s.player.x).toBeGreaterThan(6.5);
   });
 });

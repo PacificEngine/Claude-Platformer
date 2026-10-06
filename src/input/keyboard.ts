@@ -9,6 +9,7 @@ const BINDINGS: Record<keyof Input, string[]> = {
   right: ['ArrowRight', 'KeyD'],
   jump: ['Space', 'KeyZ', 'ArrowUp', 'KeyW'],
   run: ['KeyX', 'ShiftLeft', 'ShiftRight'],
+  down: ['ArrowDown', 'KeyS'],
 };
 
 const BOUND_CODES = new Set(Object.values(BINDINGS).flat());
@@ -29,6 +30,6 @@ export function createKeyboardInput(target: EventTarget): InputSource {
 
   const held = (action: keyof Input) => BINDINGS[action].some((code) => down.has(code));
   return {
-    poll: () => ({ left: held('left'), right: held('right'), jump: held('jump'), run: held('run') }),
+    poll: () => ({ left: held('left'), right: held('right'), jump: held('jump'), run: held('run'), down: held('down') }),
   };
 }

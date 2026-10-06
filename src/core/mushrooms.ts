@@ -5,8 +5,8 @@ import { moveBody, overlaps } from './physics';
 import type { GameState, Mushroom } from './types';
 
 /** A mushroom resting on top of block cell (col, row), heading right. */
-export function makeMushroom(col: number, row: number): Mushroom {
-  return { x: col + 0.1, y: row - 0.8, w: 0.8, h: 0.8, vx: MUSHROOM_SPEED, vy: 0, dir: 1, onGround: false };
+export function makeMushroom(col: number, row: number, kind: Mushroom['kind'] = 'grow'): Mushroom {
+  return { x: col + 0.1, y: row - 0.8, w: 0.8, h: 0.8, vx: MUSHROOM_SPEED, vy: 0, kind, dir: 1, onGround: false };
 }
 
 export function updateMushrooms(s: GameState): void {
@@ -24,6 +24,11 @@ export function collectMushrooms(s: GameState): void {
   const p = s.player;
   s.mushrooms = s.mushrooms.filter((m) => {
     if (!overlaps(p, m)) return true;
+    if (m.kind === 'oneUp') {
+      s.lives += 1;
+      emit(s, 'oneup');
+      return false;
+    }
     s.score += POINTS.mushroom;
     growPlayer(p);
     emit(s, 'powerup');
