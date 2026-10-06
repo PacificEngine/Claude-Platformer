@@ -87,7 +87,9 @@ New phase `'warping'` and `GameState.warp: { to: number; teleported: boolean } |
 
 ### Camera
 
-`updateCamera` is unchanged for normal play. The warp teleport sets `cameraX` directly.
+`updateCamera` is unchanged for normal play. The warp teleport sets `cameraX` directly. While the player's centre column is inside a `dark` range (a bonus room), the camera is additionally clamped to `[range.from, max(range.from, range.to + 1 - 16)]`, so nothing outside the room is ever in view; the teleport applies the same clamp.
+
+Dark rooms are hidden from the outside: tiles, coins, mushrooms and enemies in a `dark` column range are drawn only while the player is inside that same range. From the main level a room is therefore invisible (blank sky), even if the camera scrolls near it.
 
 ### Rendering and audio
 
