@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Platformer</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #111; display: flex; align-items: center; justify-content: center; }
+      canvas { image-rendering: pixelated; width: min(100vw, calc(100vh * 256 / 224)); aspect-ratio: 256 / 224; }
+    </style>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
