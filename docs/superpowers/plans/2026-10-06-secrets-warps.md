@@ -2226,7 +2226,7 @@ Use `mcp__Claude_Browser__preview_start` with name `platformer`, then screenshot
 Run: `yarn test && yarn typecheck && yarn build`
 Expected: all green.
 
-- [ ] **Step 4: Squash into one meaningful commit**
+- [ ] **Step 3: Squash into one meaningful commit**
 
 The spec commit (`013fc34`) stays separate; squash everything after it:
 ```bash
@@ -2238,6 +2238,6 @@ git log --oneline
 ```
 Expected: two commits (spec, then implementation) on top of `main`.
 
-- [ ] **Step 5: Finish the branch**
+- [ ] **Step 4: Finish the branch**
 
 Invoke `superpowers:finishing-a-development-branch`.
