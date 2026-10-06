@@ -10,6 +10,7 @@ A side-scrolling platformer in TypeScript and HTML5 Canvas. No game engine and n
 - **Secrets:** invisible blocks that only appear when you bump them from below: hidden coins, a 1-up, a power-up, and a hidden pipe entrance.
 - **Warp pipes:** teleport to another spot in the level, or drop into a sealed bonus room with its own exit pipe.
 - **Music:** original chiptune synthesized in code: a theme for each level, a calmer bonus-room track, and short stingers for level clear, game over and winning. Press **M** to mute the music; sound effects stay on.
+- **Touch controls:** an on-screen D-pad, Jump and Run buttons, and a mute button, so it plays on phones and tablets.
 - **Game flow:** score, coins, lives, a time bonus, three levels, a title screen and a game-over screen.
 
 ## Play locally
@@ -26,6 +27,8 @@ yarn dev
 | Run | X or Shift |
 | Mute / unmute the music | M |
 | Enter a pipe | Down or S, while standing centred on top of it |
+
+On touch screens, use the on-screen buttons: the pad moves (and Down enters pipes), JUMP jumps, RUN toggles running, and the note button mutes the music.
 
 Bump blocks from below. Look for blocks that are not there: some secrets are invisible until you jump into them.
 

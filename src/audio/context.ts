@@ -6,6 +6,6 @@ let shared: AudioContext | null = null;
  */
 export function getAudioContext(): AudioContext {
   shared ??= new AudioContext();
-  if (shared.state === 'suspended') void shared.resume();
+  if (shared.state !== 'running') void shared.resume();
   return shared;
 }
