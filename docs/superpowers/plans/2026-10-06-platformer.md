@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a Mario-style side-scrolling platformer (enemies, power-ups, blocks, coins, 3 levels) that runs in the browser.
+**Goal:** Build a classic side-scrolling platformer (enemies, power-ups, blocks, coins, 3 levels) that runs in the browser.
 
 **Architecture:** A pure, deterministic core (`step(state, input)` at a fixed 1/60 s tick, plain-data `GameState`) with thin edges: text-format level parser, keyboard input, canvas renderer with code-defined pixel-art sprites, WebAudio synth. Seams (`InputSource`, `LevelSource`, `SaveStore`) leave room for touch controls, a level editor, and save data.
 
@@ -3503,7 +3503,7 @@ Expected: all green.
 The spec commit `f6b8a0b` stays separate; squash everything after it:
 ```bash
 git reset --soft f6b8a0b
-git commit -m "Build a Mario-style platformer in TypeScript and Canvas
+git commit -m "Build a side-scrolling platformer in TypeScript and Canvas
 
 A deterministic fixed-step core (physics, enemies, blocks, power-ups, goal) is developed test-first and kept free of rendering, so touch input, a level editor and save data can be added at the InputSource, LevelSource and SaveStore seams. Three built-in levels are guarded by a bot replay test; pixel-art sprites are defined in code so the game needs no assets."
 git log --oneline
