@@ -1,3 +1,4 @@
+import { getAudioContext } from './context';
 import type { EventType, GameEvent } from '../core/types';
 
 type Note = [frequency: number, seconds: number, wave?: OscillatorType];
@@ -19,15 +20,10 @@ const SOUNDS: Record<EventType, Note[]> = {
 };
 
 export function createAudio(): { play(events: readonly GameEvent[]): void } {
-  let context: AudioContext | null = null;
-
   return {
     play(events) {
       if (events.length === 0) return;
-      // Created lazily: events only occur after a key press, which satisfies autoplay policy.
-      context ??= new AudioContext();
-      const audio = context;
-      void audio.resume();
+      const audio = getAudioContext();
       for (const event of events) {
         let t = audio.currentTime;
         for (const [frequency, seconds, wave = 'triangle'] of SOUNDS[event.type]) {

@@ -1,3 +1,4 @@
+import { createMusic } from './audio/music';
 import { createAudio } from './audio/synth';
 import { DT } from './core/constants';
 import { step } from './core/game';
@@ -18,6 +19,10 @@ const levels = Array.from({ length: builtinLevels.count() }, (_, i) => builtinLe
 const state = createGame(levels);
 const input = createKeyboardInput(window);
 const audio = createAudio();
+const music = createMusic();
+window.addEventListener('keydown', (event) => {
+  if (event.code === 'KeyM' && !event.repeat && !event.metaKey && !event.ctrlKey && !event.altKey) music.toggleMute();
+});
 const sheet = bakeSprites();
 const saveStore = createMemorySaveStore();
 
@@ -38,6 +43,7 @@ function frame(now: number): void {
     lastPhase = state.phase;
     accumulator -= DT;
   }
+  music.update(state);
   render(ctx, state, sheet);
   requestAnimationFrame(frame);
 }
