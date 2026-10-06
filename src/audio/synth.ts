@@ -15,6 +15,7 @@ const SOUNDS: Record<EventType, Note[]> = {
   death: [[392, 0.15, 'square'], [330, 0.15, 'square'], [262, 0.4, 'square']],
   flag: [[523, 0.1, 'square'], [659, 0.1, 'square'], [784, 0.1, 'square'], [1047, 0.4, 'square']],
   oneup: [[659, 0.08, 'square'], [784, 0.08, 'square'], [1319, 0.2, 'square']],
+  warp: [[392, 0.06, 'square'], [330, 0.06, 'square'], [262, 0.06, 'square'], [196, 0.14, 'square']],
 };
 
 export function createAudio(): { play(events: readonly GameEvent[]): void } {

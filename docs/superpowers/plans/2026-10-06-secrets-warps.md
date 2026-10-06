@@ -2221,16 +2221,12 @@ The replay bot still has to beat every level, so richer layouts cannot silently 
 
 Use `mcp__Claude_Browser__preview_start` with name `platformer`, then screenshots. Verify with `preview_eval` key events dispatched on `window` (see the earlier `key(type, code)` pattern): the title screen; jumping feels taller; walking up the level-1 pyramid; a pipe renders with its mouth; pressing Down on pipe `1` (hold Right until standing on it, then tap `ArrowDown`) sinks the player, scrolls, and emerges from pipe `2`; the bonus room (pipe `3`) is dark with no outside visible, coins collectable, and its exit pipe returns to the entrance; a hidden coin block at level 1 col 11 appears only when bumped from below; no console errors.
 
-- [ ] **Step 2: Snyk scan**
-
-Run `mcp__Snyk__snyk_code_scan` on `/Users/joe.salomone/Workspace/Claude-Platformer/src`. If it still returns "User not authenticated", record that and tell the user (authentication is the user's step).
-
-- [ ] **Step 3: Final verification**
+- [ ] **Step 2: Final verification** (no Snyk scan: the user has said it is not required for this project)
 
 Run: `yarn test && yarn typecheck && yarn build`
 Expected: all green.
 
-- [ ] **Step 4: Squash into one meaningful commit**
+- [ ] **Step 3: Squash into one meaningful commit**
 
 The spec commit (`013fc34`) stays separate; squash everything after it:
 ```bash
@@ -2242,6 +2238,6 @@ git log --oneline
 ```
 Expected: two commits (spec, then implementation) on top of `main`.
 
-- [ ] **Step 5: Finish the branch**
+- [ ] **Step 4: Finish the branch**
 
 Invoke `superpowers:finishing-a-development-branch`.

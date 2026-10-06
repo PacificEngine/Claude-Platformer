@@ -58,6 +58,7 @@ export function loadLevel(s: GameState, index: number, size: Player['size']): vo
   s.coinPickups = level.coins.map((cell) => ({ ...cell }));
   s.flag = makeFlag(level);
   s.cameraX = 0;
+  s.warp = null;
   s.timeLeft = START_TIME;
 }
 
@@ -82,6 +83,8 @@ export function createGame(levels: Level[]): GameState {
     phaseTimer: 0,
     tick: 0,
     prevJump: false,
+    prevDown: false,
+    warp: null,
     events: [],
   };
   loadLevel(state, 0, 'small');

@@ -1,8 +1,35 @@
-export type Tile = 'empty' | 'solid' | 'brick' | 'coinBlock' | 'mushroomBlock' | 'used';
+export type Tile =
+  | 'empty' | 'solid' | 'brick' | 'coinBlock' | 'mushroomBlock' | 'used'
+  | 'pipeTL' | 'pipeTR' | 'pipeL' | 'pipeR'
+  | 'hiddenCoin' | 'hiddenOneUp' | 'hiddenMushroom' | 'hiddenWarp' | 'warpBlock';
 
 export interface Cell {
   col: number;
   row: number;
+}
+
+/** A labelled pipe mouth: the top-left cell of a pipe. */
+export interface Mouth {
+  id: number;
+  col: number;
+  row: number;
+}
+
+export interface Warp {
+  from: number;
+  to: number;
+}
+
+/** A hidden warp block at (col, row) that, once revealed, enters mouth `to`. */
+export interface SecretWarp {
+  col: number;
+  row: number;
+  to: number;
+}
+
+export interface ColumnRange {
+  from: number;
+  to: number;
 }
 
 export interface Level {
@@ -14,6 +41,10 @@ export interface Level {
   walkers: Cell[];
   shells: Cell[];
   coins: Cell[];
+  mouths: Mouth[];
+  warps: Warp[];
+  secretWarps: SecretWarp[];
+  dark: ColumnRange[];
 }
 
 export interface Input {
@@ -21,6 +52,7 @@ export interface Input {
   right: boolean;
   jump: boolean;
   run: boolean;
+  down: boolean;
 }
 
 export interface Rect {
@@ -55,19 +87,20 @@ export interface Enemy extends Body {
 }
 
 export interface Mushroom extends Body {
+  kind: 'grow' | 'oneUp';
   dir: 1 | -1;
   onGround: boolean;
 }
 
 export type EventType =
   | 'jump' | 'coin' | 'stomp' | 'kick' | 'sprout' | 'powerup'
-  | 'shrink' | 'bump' | 'break' | 'death' | 'flag' | 'oneup';
+  | 'shrink' | 'bump' | 'break' | 'death' | 'flag' | 'oneup' | 'warp';
 
 export interface GameEvent {
   type: EventType;
 }
 
-export type Phase = 'title' | 'playing' | 'dying' | 'levelClear' | 'gameOver' | 'won';
+export type Phase = 'title' | 'playing' | 'dying' | 'levelClear' | 'gameOver' | 'won' | 'warping';
 
 export interface GameState {
   phase: Phase;
@@ -89,5 +122,7 @@ export interface GameState {
   phaseTimer: number;
   tick: number;
   prevJump: boolean;
+  prevDown: boolean;
+  warp: { to: number; teleported: boolean } | null;
   events: GameEvent[];
 }

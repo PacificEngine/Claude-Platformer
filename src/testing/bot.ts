@@ -22,6 +22,6 @@ export function createBot(): (s: GameState) => Input {
     const want = s.player.onGround && shouldJump(s);
     const jump = s.player.onGround ? want && !held : held;
     held = jump;
-    return { left: false, right: true, run: true, jump };
+    return { left: false, right: true, run: true, jump, down: false };
   };
 }

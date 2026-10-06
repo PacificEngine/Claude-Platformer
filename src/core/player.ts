@@ -49,7 +49,7 @@ export function updatePlayer(s: GameState, input: Input): void {
   if (p.jumping && !input.jump && p.vy < -JUMP_CUT_VELOCITY) p.vy = -JUMP_CUT_VELOCITY;
   p.vy = Math.min(p.vy + GRAVITY * DT, MAX_FALL);
 
-  const result = moveBody(p, s.tiles);
+  const result = moveBody(p, s.tiles, { bumpHidden: true });
   p.onGround = result.landed;
   if (result.landed) p.jumping = false;
   if (result.bonk) hitBlock(s, result.bonk.col, result.bonk.row);

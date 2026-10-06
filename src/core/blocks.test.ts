@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { collect, levelText, playing, tick } from '../testing/helpers';
+import { collect, levelText, pipeEdits, playing, tick } from '../testing/helpers';
 import { addCoin, hitBlock } from './blocks';
 import { START_LIVES } from './constants';
 import { growPlayer } from './growth';
@@ -68,5 +68,47 @@ describe('addCoin', () => {
     expect(s.coins).toBe(0);
     expect(s.lives).toBe(START_LIVES + 1);
     expect(s.events.map((e) => e.type)).toEqual(['coin', 'oneup']);
+  });
+});
+
+describe('hidden blocks', () => {
+  it('a hidden coin block pays a coin and becomes used', () => {
+    const s = underBlock('h');
+    const events = collect(s, { jump: true }, 3);
+    expect(s.tiles[3][5]).toBe('used');
+    expect(s.coins).toBe(1);
+    expect(events).toContain('coin');
+  });
+
+  it('a hidden 1-up block releases a 1-up mushroom', () => {
+    const s = underBlock('u');
+    const events = collect(s, { jump: true }, 3);
+    expect(s.tiles[3][5]).toBe('used');
+    expect(s.mushrooms).toHaveLength(1);
+    expect(s.mushrooms[0].kind).toBe('oneUp');
+    expect(events).toContain('sprout');
+  });
+
+  it('a hidden power-up block releases a normal mushroom', () => {
+    const s = underBlock('m');
+    collect(s, { jump: true }, 3);
+    expect(s.tiles[3][5]).toBe('used');
+    expect(s.mushrooms[0].kind).toBe('grow');
+  });
+
+  it('a hidden warp block turns into a solid warp block', () => {
+    const s = playing(levelText(30, [[5, 3, 'w'], ...pipeEdits(20, '2')], 6, ['secret 1 -> 2']));
+    tick(s, {}, 3);
+    s.player.x = 5.1;
+    tick(s, {}, 3);
+    const events = collect(s, { jump: true }, 3);
+    expect(s.tiles[3][5]).toBe('warpBlock');
+    expect(events).toContain('sprout');
+  });
+
+  it('stays hidden until bumped from below', () => {
+    const s = playing(levelText(30, [[5, 3, 'h']]));
+    tick(s, { right: true }, 20);
+    expect(s.tiles[3][5]).toBe('hiddenCoin');
   });
 });

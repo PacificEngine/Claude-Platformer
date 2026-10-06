@@ -1,6 +1,6 @@
 # Platformer — Design
 
-A Mario-style side-scrolling platformer for the browser. TypeScript + HTML5 Canvas, no game engine. Vite, Vitest, yarn.
+A classic side-scrolling platformer for the browser. TypeScript + HTML5 Canvas, no game engine. Vite, Vitest, yarn.
 
 ## Goals
 

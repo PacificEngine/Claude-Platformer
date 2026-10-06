@@ -6,6 +6,7 @@ import {
   VIEW_TILES_W,
   WALKER_SPEED,
 } from './constants';
+import { activeDarkRange } from './camera';
 import { moveBody, solidAt } from './physics';
 import type { Enemy, GameState, Tile } from './types';
 
@@ -29,8 +30,10 @@ function stepEnemy(s: GameState, e: Enemy): void {
 }
 
 export function updateEnemies(s: GameState): void {
+  const room = activeDarkRange(s);
   for (const e of s.enemies) {
-    if (!e.awake && e.x < s.cameraX + VIEW_TILES_W + 2) e.awake = true;
+    const inRoom = !room || (Math.floor(e.x) >= room.from && Math.floor(e.x) <= room.to);
+    if (!e.awake && inRoom && e.x < s.cameraX + VIEW_TILES_W + 2) e.awake = true;
     if (e.awake) stepEnemy(s, e);
   }
   s.enemies = s.enemies.filter((e) => e.y <= s.height + 2);

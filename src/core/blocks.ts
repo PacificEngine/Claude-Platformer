@@ -18,12 +18,23 @@ export function addCoin(s: GameState): void {
 export function hitBlock(s: GameState, col: number, row: number): void {
   switch (s.tiles[row][col]) {
     case 'coinBlock':
+    case 'hiddenCoin':
       s.tiles[row][col] = 'used';
       addCoin(s);
       break;
     case 'mushroomBlock':
+    case 'hiddenMushroom':
       s.tiles[row][col] = 'used';
       s.mushrooms.push(makeMushroom(col, row));
+      emit(s, 'sprout');
+      break;
+    case 'hiddenOneUp':
+      s.tiles[row][col] = 'used';
+      s.mushrooms.push(makeMushroom(col, row, 'oneUp'));
+      emit(s, 'sprout');
+      break;
+    case 'hiddenWarp':
+      s.tiles[row][col] = 'warpBlock';
       emit(s, 'sprout');
       break;
     case 'brick':

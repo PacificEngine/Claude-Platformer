@@ -88,3 +88,48 @@ describe('overlaps', () => {
     expect(overlaps(a, { x: 1, y: 0, w: 1, h: 1 })).toBe(false);
   });
 });
+
+describe('hidden tiles', () => {
+  const hidden = () => tilesOf(levelText(10, [[5, 3, 'h']]));
+
+  it('are not solid to sideways movement', () => {
+    const tiles = tilesOf(levelText(10, [[5, 4, 'h']]));
+    const b = body({ x: 3, y: 4 });
+    let hit = false;
+    for (let i = 0; i < 40; i++) {
+      b.vx = 8;
+      hit ||= moveBody(b, tiles).hitX;
+    }
+    expect(hit).toBe(false);
+    expect(b.x).toBeGreaterThan(6);
+  });
+
+  it('are not solid to a falling body', () => {
+    const b = body({ x: 5.1, y: 1, vy: 10 });
+    let landed = false;
+    for (let i = 0; i < 80 && !landed; i++) landed = moveBody(b, hidden()).landed;
+    expect(landed).toBe(true);
+    expect(b.y).toBeCloseTo(4);
+  });
+
+  it('are bumped from below when bumpHidden is on', () => {
+    const b = body({ x: 5.1, y: 4, vy: -10 });
+    const result = moveBody(b, hidden(), { bumpHidden: true });
+    expect(result.bonk).toEqual({ col: 5, row: 3 });
+    expect(b.y).toBeCloseTo(4);
+    expect(b.vy).toBe(0);
+  });
+
+  it('are passed through from below when bumpHidden is off', () => {
+    const b = body({ x: 5.1, y: 4, vy: -10 });
+    const result = moveBody(b, hidden());
+    expect(result.bonk).toBeNull();
+    expect(b.y).toBeLessThan(4);
+  });
+
+  it('are ignored when the head is already inside the tile', () => {
+    const b = body({ x: 5.1, y: 3.5, vy: -1 });
+    const result = moveBody(b, hidden(), { bumpHidden: true });
+    expect(result.bonk).toBeNull();
+  });
+});
